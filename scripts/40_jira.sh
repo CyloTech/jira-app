@@ -130,6 +130,10 @@ cat << EOF >> ${JIRA_HOME}/dbconfig.xml
     </jdbc-datasource>
 </jira-database-config>
 EOF
+        until [[ $(curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST "https://api.cylo.io/v1/apps/installed/${INSTANCE_ID}" | grep '200') ]]
+           do
+           sleep 5
+        done
     else
         echo "This is an update, jira updates should be done from within the app.".
         until [[ $(curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST "https://api.cylo.io/v1/apps/installed/${INSTANCE_ID}" | grep '200') ]]
