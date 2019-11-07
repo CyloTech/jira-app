@@ -62,14 +62,13 @@ ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"
 
 # Setup jira
-VOLUME ["${JIRA_HOME}"]
 WORKDIR $JIRA_HOME
 
 # Expose HTTP port
 EXPOSE 80
 EXPOSE 5432/tcp
 
-ARG JIRA_VERSION=8.0.0
+ARG JIRA_VERSION=8.3.0
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/atlassian-jira-software-${JIRA_VERSION}.tar.gz
 
 RUN mkdir -p                             ${JIRA_INSTALL_DIR} \
@@ -77,7 +76,7 @@ RUN mkdir -p                             ${JIRA_INSTALL_DIR} \
     && chown -R ${RUN_USER}:${RUN_GROUP} ${JIRA_INSTALL_DIR}/ \
     && sed -i -e 's/^JVM_SUPPORT_RECOMMENDED_ARGS=""$/: \${JVM_SUPPORT_RECOMMENDED_ARGS:=""}/g' ${JIRA_INSTALL_DIR}/bin/setenv.sh \
     && sed -i -e 's/^JVM_\(.*\)_MEMORY="\(.*\)"$/: \${JVM_\1_MEMORY:=\2}/g' ${JIRA_INSTALL_DIR}/bin/setenv.sh \
-    && sed -i -e 's/port="80"/port="80" secure="${catalinaConnectorSecure}" scheme="${catalinaConnectorScheme}" proxyName="${catalinaConnectorProxyName}" proxyPort="${catalinaConnectorProxyPort}"/' ${JIRA_INSTALL_DIR}/conf/server.xml \
+    && sed -i -e 's/port="8080"/port="80" secure="${catalinaConnectorSecure}" scheme="${catalinaConnectorScheme}" proxyName="${catalinaConnectorProxyName}" proxyPort="${catalinaConnectorProxyPort}"/' ${JIRA_INSTALL_DIR}/conf/server.xml \
     && sed -i -e 's/Context path=""/Context path="${catalinaContextPath}"/' ${JIRA_INSTALL_DIR}/conf/server.xml \
     && sed -i -e 's/port="8080"/port="80"/g' ${JIRA_INSTALL_DIR}/conf/server.xml \
     && touch /etc/container_id && chmod 666 /etc/container_id
